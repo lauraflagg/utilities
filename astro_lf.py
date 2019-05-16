@@ -8,13 +8,6 @@ def wn2wl(arr,units='microns'):
     return 10.0**4/arr
 
 
-def readirafwl(head):
-    #input like:
-    #	a0v=fits.open(files[i])
-    #	heads=a0v[0].header
-    for item in head:
-        x=2
-
 def deltawltovelo(delta,wl):
     vel=3.*10.**5*delta/wl
     return vel
@@ -23,6 +16,7 @@ def veltodeltawl(vel,wl):
     delta=vel*wl/(3*10**5)
     return delta
 
+	
 def rotbroad(wl, flux, vsini, eps=0.6,nr=10,ntheta=100, dif=0):
 
     # based on CMJ's program rotint.pro edited May 11 1994
@@ -49,16 +43,15 @@ def rotbroad(wl, flux, vsini, eps=0.6,nr=10,ntheta=100, dif=0):
     tarea=0.0
 
     dr=1./nr
-    j=0
-    while j<nr:
+
+    for j in range(nr):
         r=dr/2.+j*dr
         area=((r+dr/2.)**2-(r-dr/2.)**2)/int(ntheta*r)*(1.-eps+eps*np.cos(np.arcsin(r)))
-        k=0
-        while k<int(ntheta*r)-1:
+        for k in range(int(ntheta*r)-1):
             th=np.pi/int(ntheta*r)+k*2.*np.pi/int(ntheta*r)
             if dif!=0:
                 vl=vsini*r*np.sin(th)*(1.-dif/2.-dif/2.*np.cos(2.*np.arccos(r*np.cos(th))))
-                interped = interp1d(wl+wl*vl/(3*10**5), flux)
+                interped = interp1d(wl+wl*vl/(3*10**5), flux,fill_value='extrapolate')
                 ns=ns+area*interped(wl) #interpol(flux,wl+wl*vl/3.e5,wl) 
                 tarea=tarea+area
             else:
@@ -66,10 +59,6 @@ def rotbroad(wl, flux, vsini, eps=0.6,nr=10,ntheta=100, dif=0):
                 interped = interp1d(wl+wl*vl/(3*10**5), flux,fill_value='extrapolate')
                 ns=ns+area*interped(wl)#     ns=ns+area*interpol(flux,wl+wl*vl/3.e5,wl) 
                 tarea=tarea+area
-            k=k+1
-        j=j+1
-
-
 
     ns=ns/tarea
     return ns
