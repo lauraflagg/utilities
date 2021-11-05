@@ -75,7 +75,7 @@ def backupandwrite(filename,heads,data):
 	
 		
 	with open(filename, 'w') as fp: 
-		writer = csv.writer(fp, delimiter=',') # 
+		writer = csv.writer(fp, delimiter=',', lineterminator = '\n') # 
 		writer.writerow(heads) # write header 
 		writer.writerows(data)
 
