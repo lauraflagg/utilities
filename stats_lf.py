@@ -8,6 +8,9 @@ logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 logger.setLevel(logging.INFO)
 
+def parabola(x, bas, qua, cen):
+    return bas+qua*(x-cen)**2
+
 def chisq(arr1,arr2):
     x=np.sum((arr1-arr2)**2)
     return x

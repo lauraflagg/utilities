@@ -1,0 +1,10 @@
+
+*.pyc
+*.pyc
+spectrum/
+ccf_funcs.py
+*.pyc
+*.pyc
+__pycache__/readwrite_lf.cpython-36.pyc
+__pycache__/stats_lf.cpython-36.pyc
+misc_lf.py
