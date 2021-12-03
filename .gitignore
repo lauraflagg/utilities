@@ -8,3 +8,5 @@ ccf_funcs.py
 __pycache__/readwrite_lf.cpython-36.pyc
 __pycache__/stats_lf.cpython-36.pyc
 misc_lf.py
+__pycache__/stats_lf.cpython-36.pyc
+*.pyc

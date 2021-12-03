@@ -439,3 +439,35 @@ def coadd_echelle(w_matrix,f_matrix,e_matrix,wls,ledgecut=5,redgecut=5):
                 unc[i]=np.sqrt(1./np.sum(1./us[good]**2))
 
     return flux,unc
+
+def coadd_echelle(w_matrix,f_matrix,e_matrix,wls,ledgecut=5,redgecut=5):
+    '''to combine echelle spectra with overlapping edges'''
+    flux_list=[]
+    unc_list=[]
+    spec_count=np.zeros_like(wls)
+    flux=np.zeros_like(wls)
+    unc=np.zeros_like(wls)
+    nan_locs=np.where(e_matrix==np.nan)
+    e_matrix[np.where(e_matrix==np.nan)]=1e4
+
+    for w,f,e in zip(np.nan_to_num(np.array(w_matrix)),np.nan_to_num(np.array(f_matrix)),np.nan_to_num(np.array(e_matrix))):
+        interped_fl,interped_unc=spectres.spectres(wls,w[ledgecut:-(redgecut+1)],f[ledgecut:-(redgecut+1)],spec_errs=e[ledgecut:-(redgecut+1)],fill=0,verbose=False)
+        #print(interped_fl,interped_unc,interped_unc.shape)
+        interped_region=np.where(interped_fl!=0)
+        
+        spec_count[interped_region]+=1
+        flux_list.append(interped_fl)
+        unc_to_use=np.nan_to_num(interped_unc)
+        unc_list.append(unc_to_use)
+
+    fl_array=np.nan_to_num(np.array(flux_list).transpose())
+    unc_array=np.array(unc_list).transpose()
+    #print(unc_array)
+    unc_array1=unc_array.copy()
+    unc_array1[np.where(unc_array==0)]==1e100
+    #print(unc_array1)
+    weights_array=np.nan_to_num(1./unc_array1**2,posinf=1e-100,neginf=1e-100)
+
+    flux[:]=np.average(fl_array,weights=weights_array,axis=1)
+    unc[:]=np.sqrt(1./np.sum(weights_array,axis=1))
+    return flux,unc

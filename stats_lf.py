@@ -8,6 +8,12 @@ logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 logger.setLevel(logging.INFO)
 
+def FWHM_to_sigma(fwhm):
+    return fwhm/np.sqrt(8*np.log(2))
+
+def sigma_to_FWHM(sigma):
+    return sigma*np.sqrt(8*np.log(2))
+
 def parabola(x, bas, qua, cen):
     return bas+qua*(x-cen)**2
 
