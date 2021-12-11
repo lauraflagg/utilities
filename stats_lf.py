@@ -114,8 +114,7 @@ def func2d(func, arr1, arr2, plot=False, println=False, printmins=True,xlab='xla
 def xcor(f, g, lb, ub, dispersion=0):
     #print(version)
     ''''ub and lb are upper and lower bounds of pixel shift
-    version='bl' (default) or 'z' or 'xc' or 'xcor'
-    maxvalue will mask out all values of a certain value'''
+    dispersion in velocity' '''
     #print(len(f))
     if np.abs(lb)>len(f) or ub>len(f):
         message='Bounds at '+str(lb)+', '+str(ub)+' too wide for array of length '+str(len(f))
@@ -161,7 +160,7 @@ def xcor(f, g, lb, ub, dispersion=0):
         corrs=corrs,rvs
     return corrs    
 
-def xcor_old(f, g, lb, ub, dispersion=0):
+def xcor(f, g, lb, ub, dispersion=0):
     #ub and lb are upper and lower bounds of pixel shift
     #print(len(f))
     if np.abs(lb)>len(f) or ub>len(f):
