@@ -112,6 +112,56 @@ def func2d(func, arr1, arr2, plot=False, println=False, printmins=True,xlab='xla
 
 
 def xcor(f, g, lb, ub, dispersion=0):
+    #print(version)
+    ''''ub and lb are upper and lower bounds of pixel shift
+    version='bl' (default) or 'z' or 'xc' or 'xcor'
+    maxvalue will mask out all values of a certain value'''
+    #print(len(f))
+    if np.abs(lb)>len(f) or ub>len(f):
+        message='Bounds at '+str(lb)+', '+str(ub)+' too wide for array of length '+str(len(f))
+        raise ValueError(message)
+
+    l=ub-lb
+    arrl=len(f)
+    #a1=np.zeros(arrl+l+1)
+    #a2=a1
+    shifts=np.arange(lb, ub+1)
+    shifts=shifts.astype(np.int)
+    
+    
+    corrs=[]
+    for shift in shifts:
+        if shift>0:
+            a1=g[0:arrl-shift]
+            a2=f[shift:]
+        elif shift==0:
+            a1=g
+            a2=f
+        else:
+            a1=g[-shift:]
+            a2=f[0:arrl+shift]
+        
+        a1=a1-np.mean(a1)
+        a2=a2-np.mean(a2)
+        
+
+        
+        s1=np.sqrt(np.sum(a1**2)/len(a1))
+        s2=np.sqrt(np.sum(a2**2)/len(a2))
+        
+        R_fg=np.sum((a1*a2))/len(a1)
+
+        R=R_fg/(s1*s2)
+
+        corrs.append(R)
+    corrs=np.array(corrs)
+    
+    if dispersion!=0:
+        rvs=np.arange(lb,ub+1,1)*dispersion
+        corrs=corrs,rvs
+    return corrs    
+
+def xcor_old(f, g, lb, ub, dispersion=0):
     #ub and lb are upper and lower bounds of pixel shift
     #print(len(f))
     if np.abs(lb)>len(f) or ub>len(f):
