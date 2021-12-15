@@ -110,6 +110,25 @@ def func2d(func, arr1, arr2, plot=False, println=False, printmins=True,xlab='xla
 
     return finals    
 
+def xcor_fast(a,b,lb,ub, dispersion=0):
+    '''a, b are the two arrays; 
+    lb and ub are the lower and upper bounds of the pixel shift
+    dispersion is dispersion in velocity
+    This is less accurate than the other versions, but much faster,
+    because it only calculates the stdev once per array'''
+    a = (a - np.mean(a)) 
+    b = (b - np.mean(b)) 
+    lags=np.arange(lb,ub+1,1)
+    cc= signal.correlate(a, b, 'full')
+    ll=len(cc)
+    lw=ub-lb+1
+    #bord=int((ll-lw)/2)
+    cent=int((ll-1)/2)
+    corrs= cc[(cent+lb):(cent+ub+1)]/((len(arr1)-np.abs(lags))*(np.std(a)*np.std(b) ))
+    if dispersion!=0:
+        rvs=lags*dispersion
+        corrs=corrs,rvs
+    return corrs 
 
 def xcor(f, g, lb, ub, dispersion=0):
     #print(version)
